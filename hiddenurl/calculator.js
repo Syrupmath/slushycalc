@@ -269,46 +269,38 @@ function runCalculation() {
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
   document.getElementById('results-drink-name').textContent = recipeName + ' Slushy';
 
-  // Final numbers
-  document.getElementById('result-fv').textContent  = scaledFv.toFixed(2);
-  document.getElementById('result-abv').textContent = A > 0 ? TARGET_ABV.toFixed(1) : '0';
+  // Helper: build a list item with name + oz (mL)
+  function makeIngredientLi(name, oz, ml, isAddition) {
+    const li = document.createElement('li');
+    li.className = 'results-ingredient-item' + (isAddition ? ' results-ingredient-addition' : '');
+    li.innerHTML = `<span class="ing-name">${escapeHtml(name)}</span><span class="ing-amount">${oz.toFixed(2)} oz (${ml.toFixed(0)} mL)</span>`;
+    return li;
+  }
 
-  // Scaled recipe table
-  const tbody = document.getElementById('scaled-tbody');
-  tbody.innerHTML = '';
-
+  // Scaled base recipe list
+  const baseList = document.getElementById('scaled-base-list');
+  baseList.innerHTML = '';
   scaledIngredients.forEach(ing => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${escapeHtml(ing.name)}</td>
-      <td class="text-end">${ing.oz.toFixed(2)}</td>
-      <td class="text-end">${ing.ml.toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
+    baseList.appendChild(makeIngredientLi(ing.name, ing.oz, ing.ml, false));
   });
 
-  if (scaledSyrup > 0) {
-    const syrupLabel = S === BRIX_2TO1 ? '2:1 simple syrup' : '1:1 simple syrup';
-    const tr = document.createElement('tr');
-    tr.className = 'row-addition';
-    tr.innerHTML = `
-      <td>${syrupLabel}</td>
-      <td class="text-end">${scaledSyrup.toFixed(2)}</td>
-      <td class="text-end">${ozToMl(scaledSyrup).toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
+  // Additions list
+  const additionsList  = document.getElementById('scaled-additions-list');
+  const additionsBlock = document.getElementById('additions-block');
+  additionsList.innerHTML = '';
+
+  const hasSyrup = scaledSyrup > 0;
+  const hasWater = scaledWater > 0;
+
+  if (hasSyrup) {
+    const ratio = S === BRIX_2TO1 ? '2:1' : '1:1';
+    additionsList.appendChild(makeIngredientLi(`Simple Syrup (${ratio})`, scaledSyrup, ozToMl(scaledSyrup), true));
+  }
+  if (hasWater) {
+    additionsList.appendChild(makeIngredientLi('Water', scaledWater, ozToMl(scaledWater), true));
   }
 
-  if (scaledWater > 0) {
-    const tr = document.createElement('tr');
-    tr.className = 'row-addition';
-    tr.innerHTML = `
-      <td>Water</td>
-      <td class="text-end">${scaledWater.toFixed(2)}</td>
-      <td class="text-end">${ozToMl(scaledWater).toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
-  }
+  additionsBlock.style.display = (hasSyrup || hasWater) ? 'block' : 'none';
 
   // Notes
   const notes = document.getElementById('recipe-notes').value.trim();
