@@ -1,323 +1,229 @@
-/* ============================================================
-   slushycalc.com — calculator.js
-   Slushy Calculator — Complete Formula Reference (Validated Build)
-   ============================================================
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convert any cocktail recipe for a slushy machine. The Slushy Calculator handles Brix correction, ABV targeting, and scaling to your machine volume — automatically.">
+  <meta name="keywords" content="slushy calculator, frozen cocktail calculator, batch slushy, Ninja SLUSHi, cocktail brix, slushy machine cocktail, frozen drink recipe, Jeffrey Morgenthaler">
+  <title>The Slushy Calculator — Convert Any Cocktail for a Slushy Machine</title>
 
-   CONSTANTS (never exposed to user)
-   targetBrix       = 13.5
-   targetABV        = 9       (% — empirically validated on Ninja SLUSHi, max cold)
-   ABV_hardStop     = 25      (%)
-   brixCorrection   = 0.184   (ABV expressed as whole number)
-   brix_2to1_syrup  = 67
-   brix_1to1_syrup  = 50
-   ============================================================ */
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-'use strict';
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Raleway:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-const TARGET_BRIX     = 13.5;
-const TARGET_ABV      = 9;
-const ABV_HARD_STOP   = 25;
-const BRIX_CORRECTION = 0.184;
-const BRIX_2TO1       = 67;
-const BRIX_1TO1       = 50;
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-// ---- Unit conversions to ounces ----
+  <!-- Favicon placeholders -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
 
-function toOz(value, unit) {
-  switch (unit) {
-    case 'oz':  return value;
-    case 'ml':  return value / 29.5735;
-    case 'qt':  return value * 32;
-    case 'gal': return value * 128;
-    case 'l':   return value * 33.814;
-    default:    return value;
-  }
-}
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-function ozToMl(oz) {
-  return oz * 29.5735;
-}
+  <div class="form-container">
 
-// ---- Ingredient row management ----
+    <!-- HEADER -->
+    <header>
+      <p class="the">The</p>
+      <h1>Slushy Calculator</h1>
+      <p class="byline">by <a href="https://jeffreymorgenthaler.com/" target="_blank" aria-label="Jeffrey Morgenthaler's website, opens in a new window">Jeffrey Morgenthaler</a></p>
+      <p class="description">This calculator prepares cocktail recipes for frozen drink machines. It takes your existing recipe and simultaneously scales it to your desired batch size, while determining what, if anything, needs to be added in order to achieve the proper texture.</p>
+    </header>
 
-let ingredientCount = 0;
+    <hr>
 
-function createIngredientRow() {
-  ingredientCount++;
-  const li = document.createElement('li');
-  const id  = ingredientCount;
+    <!-- STEP 1: RECIPE NAME -->
+    <section id="section-name" aria-labelledby="step1-heading">
+      <h2 class="step-title" id="step1-heading">Step 1: Name Your Recipe</h2>
+      <p>Enter the name of the cocktail you're converting.</p>
+      <label for="recipe-name" class="form-label">Recipe Name</label>
+      <input type="text" id="recipe-name" class="form-control" placeholder="e.g. &quot;Jungle Bird&quot;" autocomplete="off">
+    </section>
 
-  li.innerHTML = `
-    <div class="ingredient-card" role="group" aria-label="Ingredient ${id}">
-      <div class="ingredient-row-top">
-        <input type="text" class="form-control ingredient-name" placeholder="Ingredient name" aria-label="Ingredient name" autocomplete="off">
-        <button type="button" class="btn btn-outline-danger btn-sm btn-remove" aria-label="Remove this ingredient">&times;</button>
+    <hr>
+
+    <!-- STEP 2: INGREDIENTS -->
+    <section id="section-ingredients" aria-labelledby="step2-heading">
+      <h2 class="step-title" id="step2-heading">Step 2: Add Ingredients</h2>
+      <p>Slushy machines work best with juice-forward cocktails – think Margaritas, Daiquiris, and similar drinks where citrus or fruit juice makes up a significant portion of the recipe. Spirit-driven cocktails like Manhattans or Martinis aren't a good fit for the slushy format, and as such, this calculator has a hard limit on cocktails with a pre-dilution ABV of 25% and higher.</p>
+      <p>Add each ingredient with its name, volume, unit, and ABV. Do not include any water dilution, as it will be calculated for you.</p>
+
+      <ul id="ingredient-list" class="list-unstyled" aria-label="Ingredient list">
+        <!-- Rows added dynamically -->
+      </ul>
+
+      <button id="add-ingredient" class="btn btn-secondary btn-sm mt-1" type="button" aria-label="Add another ingredient">
+        <i class="fas fa-plus" aria-hidden="true"></i> Add Ingredient
+      </button>
+    </section>
+
+    <hr>
+
+    <!-- STEP 3: REFRACTOMETER READING -->
+    <section id="section-brix" aria-labelledby="step3-heading">
+      <h2 class="step-title" id="step3-heading">Step 3: Enter Refractometer Reading</h2>
+      <p>Proper slushy texture depends on sugar content, and every cocktail starts with a different amount. Before entering your recipe, mix a small sample as written and take a Brix reading with an optical refractometer – this tells the calculator where your drink currently stands so it can determine exactly what adjustments are needed.</p>
+      <div class="input-group">
+        <span class="input-group-text" id="brix-label">Brix Reading</span>
+        <input type="number" id="brix-input" class="form-control" placeholder="e.g. 18.5" min="0" max="100" step="0.1" aria-labelledby="brix-label" aria-describedby="brix-unit">
+        <span class="input-group-text" id="brix-unit">%</span>
       </div>
-      <div class="ingredient-row-bottom">
-        <div class="input-group">
-          <input type="number" class="form-control ingredient-quantity" placeholder="Qty" min="0" step="0.25" aria-label="Quantity">
-          <select class="form-select ingredient-unit" aria-label="Unit">
-            <option value="oz">Ounces</option>
-            <option value="ml">Milliliters</option>
-          </select>
-          <span class="input-group-text">@</span>
-          <input type="number" class="form-control ingredient-abv" placeholder="ABV" min="0" max="100" step="0.5" aria-label="ABV percent">
-          <span class="input-group-text">%</span>
+    </section>
+
+    <hr>
+
+    <!-- STEP 4: SYRUP TYPE -->
+    <section id="section-syrup" aria-labelledby="step4-heading">
+      <h2 class="step-title" id="step4-heading">Step 4: Select Syrup Type</h2>
+      <p>You'll also need to indicate whether you prefer to use 1:1 or 2:1 syrup for any sugar adjustments. Choose the syrup you'll be using; if no additional sugar is needed, this selection will be ignored.</p>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="syrup-type" id="syrup-2to1" value="67" checked>
+        <label class="form-check-label" for="syrup-2to1">2:1 Simple Syrup</label>
+        <small class="text-muted d-block">Two parts sugar to one part water by weight. Standard rich syrup.</small>
+      </div>
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="radio" name="syrup-type" id="syrup-1to1" value="50">
+        <label class="form-check-label" for="syrup-1to1">1:1 Simple Syrup</label>
+        <small class="text-muted d-block">Equal parts sugar and water by weight. Standard simple syrup.</small>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- STEP 5: MACHINE VOLUME -->
+    <section id="section-volume" aria-labelledby="step5-heading">
+      <h2 class="step-title" id="step5-heading">Step 5: Enter Machine Volume</h2>
+      <p>Enter the total capacity of your slushy machine, or the total batch size you wish to prepare.</p>
+      <div class="input-group">
+        <span class="input-group-text" id="machine-volume-label">Machine Volume</span>
+        <input type="number" id="machine-volume" class="form-control" placeholder="e.g. 48" min="0.1" step="0.1" aria-labelledby="machine-volume-label">
+        <select id="machine-unit" class="form-select" style="max-width: 130px;" aria-label="Volume unit">
+          <option value="oz">Ounces</option>
+          <option value="qt">Quarts</option>
+          <option value="gal">Gallons</option>
+          <option value="l">Liters</option>
+        </select>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CALCULATE BUTTON -->
+    <button id="calculate-btn" class="btn btn-primary btn-lg w-100" type="button">
+      Calculate
+    </button>
+
+    <!-- ERROR ALERT -->
+    <div id="error-alert" class="alert alert-danger mt-3" role="alert" style="display:none;"></div>
+
+    <!-- RESULTS -->
+    <section id="results" style="display:none;" aria-labelledby="results-heading" aria-live="polite">
+      <h2 id="results-drink-name" class="results-title"></h2>
+      <p id="results-path-note" class="path-note"></p>
+
+      <div class="row g-3 mb-3">
+
+        <!-- Additions card -->
+        <div class="col-12">
+          <div class="card result-card">
+            <div class="card-header">What to Add</div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-6 border-end">
+                  <div class="result-label">Syrup</div>
+                  <div class="result-value" id="result-syrup">—</div>
+                  <div class="result-unit" id="result-syrup-unit"></div>
+                </div>
+                <div class="col-6">
+                  <div class="result-label">Water</div>
+                  <div class="result-value" id="result-water">—</div>
+                  <div class="result-unit" id="result-water-unit"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final numbers card -->
+        <div class="col-12">
+          <div class="card result-card">
+            <div class="card-header">Final Numbers</div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="result-label">Final Volume</div>
+                  <div class="result-value" id="result-fv">—</div>
+                  <div class="result-unit">oz</div>
+                </div>
+                <div class="col-4 border-start border-end">
+                  <div class="result-label">Target ABV</div>
+                  <div class="result-value" id="result-abv">—</div>
+                  <div class="result-unit">%</div>
+                </div>
+                <div class="col-4">
+                  <div class="result-label">Target Brix</div>
+                  <div class="result-value" id="result-brix">13.5</div>
+                  <div class="result-unit">°Bx</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scaled ingredients -->
+      <div class="card result-card mb-3">
+        <div class="card-header">Scaled Recipe</div>
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0" id="scaled-table" aria-label="Scaled ingredient amounts">
+            <thead>
+              <tr>
+                <th scope="col">Ingredient</th>
+                <th scope="col" class="text-end">oz</th>
+                <th scope="col" class="text-end">mL</th>
+              </tr>
+            </thead>
+            <tbody id="scaled-tbody"></tbody>
+          </table>
         </div>
       </div>
-    </div>
-  `;
 
-  // Remove button handler
-  li.querySelector('.btn-remove').addEventListener('click', () => {
-    li.remove();
-  });
+      <p class="machine-note"><i class="fas fa-snowflake" aria-hidden="true"></i> Set your machine to maximum cold. Ignore smart presets.</p>
 
-  return li;
-}
+    </section>
 
-// ---- Validation ----
+    <hr>
 
-function showError(msg) {
-  const el = document.getElementById('error-alert');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('results').style.display = 'none';
-}
+    <!-- FOOTER -->
+    <footer>
+      <p>If you found this tool useful, consider visiting <a href="https://jeffreymorgenthaler.com/book/" target="_blank">jeffreymorgenthaler.com</a> and picking up a signed copy of one of my books. <span id="url-display">Find this tool at www.slushycalc.com</span></p>
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+        <a property="dct:title" rel="cc:attributionURL" href="https://slushycalc.com/">The Slushy Calculator</a>
+        by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://jeffreymorgenthaler.com/">Jeffrey Morgenthaler</a>
+        is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a>
+      </p>
+    </footer>
 
-function clearError() {
-  const el = document.getElementById('error-alert');
-  el.style.display = 'none';
-}
+  </div><!-- /.form-container -->
 
-// ---- Core formula ----
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-function runCalculation() {
-  clearError();
+  <!-- Calculator logic -->
+  <script src="calculator.js"></script>
 
-  // --- Collect ingredients ---
-  const rows = document.querySelectorAll('#ingredient-list li');
-  const ingredients = [];
+  <!-- SimpleAnalytics -->
+  <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade"></noscript>
 
-  for (const row of rows) {
-    const name = row.querySelector('.ingredient-name').value.trim();
-    const qty  = parseFloat(row.querySelector('.ingredient-quantity').value);
-    const unit = row.querySelector('.ingredient-unit').value;
-    const abv  = parseFloat(row.querySelector('.ingredient-abv').value);
-
-    if (!name && isNaN(qty)) continue; // skip completely empty rows
-
-    if (!name) {
-      showError('One or more ingredients is missing a name.');
-      return;
-    }
-    if (isNaN(qty) || qty <= 0) {
-      showError(`"${name}" has an invalid quantity. Please enter a number greater than zero.`);
-      return;
-    }
-    if (isNaN(abv) || abv < 0 || abv > 100) {
-      showError(`"${name}" has an invalid ABV. Please enter a number between 0 and 100.`);
-      return;
-    }
-
-    ingredients.push({ name, oz: toOz(qty, unit), abv });
-  }
-
-  if (ingredients.length === 0) {
-    showError('Please add at least one ingredient.');
-    return;
-  }
-
-  // --- V: total volume in oz ---
-  const V = ingredients.reduce((sum, i) => sum + i.oz, 0);
-
-  // --- A: blended ABV ---
-  const A = ingredients.reduce((sum, i) => sum + i.abv * i.oz, 0) / V;
-
-  // --- HARD STOP ---
-  if (A > ABV_HARD_STOP) {
-    showError(`Blended ABV is ${A.toFixed(1)}%, which exceeds the 25% limit. The recipe is too concentrated to proceed. Reduce the proportion of high-proof spirits.`);
-    return;
-  }
-
-  // --- B: raw refractometer reading ---
-  const B = parseFloat(document.getElementById('brix-input').value);
-  if (isNaN(B) || B < 0 || B > 100) {
-    showError('Please enter a valid refractometer reading (0–100).');
-    return;
-  }
-
-  // --- S: syrup Brix ---
-  const S = parseFloat(document.querySelector('input[name="syrup-type"]:checked').value);
-
-  // --- Machine volume ---
-  const machineVolumeRaw  = parseFloat(document.getElementById('machine-volume').value);
-  const machineVolumeUnit = document.getElementById('machine-unit').value;
-  if (isNaN(machineVolumeRaw) || machineVolumeRaw <= 0) {
-    showError('Please enter a valid machine volume greater than zero.');
-    return;
-  }
-  const M = toOz(machineVolumeRaw, machineVolumeUnit);
-
-  // --- Step 2: Correct Brix for alcohol ---
-  const Bc = A === 0 ? B : B - (BRIX_CORRECTION * A);
-
-  // --- Step 3: Choose path ---
-  let Fv, Sv, Wv, pathLabel, warnings = [];
-
-  const isNonAlcoholic = A === 0;
-  const belowTargetBrix = Bc < TARGET_BRIX;
-
-  if (isNonAlcoholic || belowTargetBrix) {
-    // PATH 3 — Syrup-Only
-    pathLabel = 'Path 3 (syrup addition only)';
-    Sv = V * (TARGET_BRIX - Bc) / (S - TARGET_BRIX);
-    Fv = V + Sv;
-    Wv = 0;
-
-  } else {
-    const ratio = (A * TARGET_BRIX) / Bc;
-
-    if (ratio <= TARGET_ABV) {
-      // PATH 1 — Brix-First
-      pathLabel = 'Path 1 (water dilution)';
-      Fv = V * Bc / TARGET_BRIX;
-      Sv = 0;
-      Wv = Fv - V;
-
-      if (Wv < 0) {
-        // Route to Path 3 instead
-        pathLabel = 'Path 3 (syrup addition only — Brix below target after dilution check)';
-        Sv = V * (TARGET_BRIX - Bc) / (S - TARGET_BRIX);
-        Fv = V + Sv;
-        Wv = 0;
-      }
-
-    } else {
-      // PATH 2 — ABV-First
-      pathLabel = 'Path 2 (ABV-first with syrup correction)';
-      Fv = (A * V) / TARGET_ABV;
-      Sv = (TARGET_BRIX * Fv - Bc * V) / S;
-      Wv = Fv - V - Sv;
-
-      if (Sv < 0) {
-        Sv = 0;
-        Wv = Fv - V;
-        warnings.push('Brix is approximate — no syrup addition required, but the final Brix may differ slightly from target.');
-      }
-      if (Wv < 0) {
-        Wv = 0;
-        warnings.push('ABV will be slightly below 9% — the formula hit a water floor. The drink will still freeze correctly.');
-      }
-    }
-  }
-
-  // --- Step 4: Scale to machine volume ---
-  if (Fv <= 0) {
-    showError('Final volume calculation produced an invalid result. Please check your inputs.');
-    return;
-  }
-
-  const scale = M / Fv;
-
-  const scaledIngredients = ingredients.map(i => ({
-    name: i.name,
-    oz:   i.oz * scale,
-    ml:   ozToMl(i.oz * scale),
-    isAddition: false,
-  }));
-
-  const scaledSyrup = Sv * scale;
-  const scaledWater = Wv * scale;
-  const scaledFv    = Fv * scale;
-
-  // ---- Render results ----
-
-  const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
-  document.getElementById('results-drink-name').textContent = recipeName;
-  document.getElementById('results-path-note').textContent  = pathLabel + (warnings.length ? ' — ' + warnings.join(' ') : '');
-
-  // What to add
-  document.getElementById('result-syrup').textContent      = scaledSyrup > 0 ? scaledSyrup.toFixed(2) : '0';
-  document.getElementById('result-syrup-unit').textContent = scaledSyrup > 0 ? `oz / ${ozToMl(scaledSyrup).toFixed(1)} mL` : '';
-  document.getElementById('result-water').textContent      = scaledWater > 0 ? scaledWater.toFixed(2) : '0';
-  document.getElementById('result-water-unit').textContent = scaledWater > 0 ? `oz / ${ozToMl(scaledWater).toFixed(1)} mL` : '';
-
-  // Final numbers
-  document.getElementById('result-fv').textContent  = scaledFv.toFixed(2);
-  document.getElementById('result-abv').textContent = A > 0 ? TARGET_ABV.toFixed(1) : '0';
-
-  // Scaled recipe table
-  const tbody = document.getElementById('scaled-tbody');
-  tbody.innerHTML = '';
-
-  scaledIngredients.forEach(ing => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${escapeHtml(ing.name)}</td>
-      <td class="text-end">${ing.oz.toFixed(2)}</td>
-      <td class="text-end">${ing.ml.toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  if (scaledSyrup > 0) {
-    const syrupLabel = S === BRIX_2TO1 ? '2:1 simple syrup' : '1:1 simple syrup';
-    const tr = document.createElement('tr');
-    tr.className = 'row-addition';
-    tr.innerHTML = `
-      <td>${syrupLabel}</td>
-      <td class="text-end">${scaledSyrup.toFixed(2)}</td>
-      <td class="text-end">${ozToMl(scaledSyrup).toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
-  }
-
-  if (scaledWater > 0) {
-    const tr = document.createElement('tr');
-    tr.className = 'row-addition';
-    tr.innerHTML = `
-      <td>Water</td>
-      <td class="text-end">${scaledWater.toFixed(2)}</td>
-      <td class="text-end">${ozToMl(scaledWater).toFixed(1)}</td>
-    `;
-    tbody.appendChild(tr);
-  }
-
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ---- Utility ----
-
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-// ---- Init ----
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  // Start with one ingredient row
-  document.getElementById('ingredient-list').appendChild(createIngredientRow());
-
-  // Add ingredient button
-  document.getElementById('add-ingredient').addEventListener('click', () => {
-    document.getElementById('ingredient-list').appendChild(createIngredientRow());
-  });
-
-  // Calculate button
-  document.getElementById('calculate-btn').addEventListener('click', runCalculation);
-
-  // Enter key on number inputs triggers calculation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('input[type="number"], input[type="text"]')) {
-      runCalculation();
-    }
-  });
-});
+</body>
+</html>
