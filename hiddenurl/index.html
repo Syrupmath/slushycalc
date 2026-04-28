@@ -34,7 +34,7 @@
       <p class="the">The</p>
       <h1>Slushy Calculator</h1>
       <p class="byline">by <a href="https://jeffreymorgenthaler.com/" target="_blank" aria-label="Jeffrey Morgenthaler's website, opens in a new window">Jeffrey Morgenthaler</a></p>
-      <p class="description">This tool converts any cocktail recipe for use in a slushy machine. Enter your ingredients, take a single refractometer reading, and get back the exact amounts of syrup and water to add — scaled to your machine.</p>
+      <p class="description">This calculator prepares cocktail recipes for frozen drink machines. It takes your existing recipe and simultaneously scales it to your desired batch size, while determining what, if anything, needs to be added in order to achieve the proper texture.</p>
     </header>
 
     <hr>
@@ -52,7 +52,8 @@
     <!-- STEP 2: INGREDIENTS -->
     <section id="section-ingredients" aria-labelledby="step2-heading">
       <h2 class="step-title" id="step2-heading">Step 2: Add Ingredients</h2>
-      <p>Add each ingredient with its name, volume, unit, and ABV. Include everything in the recipe — spirits, liqueurs, juices, acids. Do not include any syrups or water; those will be calculated for you.</p>
+      <p>Slushy machines work best with juice-forward cocktails – think Margaritas, Daiquiris, and similar drinks where citrus or fruit juice makes up a significant portion of the recipe. Spirit-driven cocktails like Manhattans or Martinis aren't a good fit for the slushy format, and as such, this calculator has a hard limit on cocktails with a pre-dilution ABV of 25% and higher.</p>
+      <p>Add each ingredient with its name, volume, unit, and ABV. Do not include any water dilution, as it will be calculated for you.</p>
 
       <ul id="ingredient-list" class="list-unstyled" aria-label="Ingredient list">
         <!-- Rows added dynamically -->
@@ -68,7 +69,7 @@
     <!-- STEP 3: REFRACTOMETER READING -->
     <section id="section-brix" aria-labelledby="step3-heading">
       <h2 class="step-title" id="step3-heading">Step 3: Enter Refractometer Reading</h2>
-      <p>Combine all of your ingredients and take a single reading with an optical refractometer. Enter the raw reading below — do not correct for alcohol.</p>
+      <p>Proper slushy texture depends on sugar content, and every cocktail starts with a different amount. Before entering your recipe, mix a small sample as written and take a Brix reading with an optical refractometer – this tells the calculator where your drink currently stands so it can determine exactly what adjustments are needed.</p>
       <label for="brix-input" class="form-label">Raw Refractometer Reading (Brix)</label>
       <div class="input-group" style="max-width: 220px;">
         <input type="number" id="brix-input" class="form-control" placeholder="e.g. 18.5" min="0" max="100" step="0.1" aria-describedby="brix-unit">
@@ -81,7 +82,7 @@
     <!-- STEP 4: SYRUP TYPE -->
     <section id="section-syrup" aria-labelledby="step4-heading">
       <h2 class="step-title" id="step4-heading">Step 4: Select Syrup Type</h2>
-      <p>Choose the syrup you'll be using for adjustment. If no syrup is needed, this selection will be ignored.</p>
+      <p>You'll also need to indicate whether you prefer to use 1:1 or 2:1 syrup for any sugar adjustments. Choose the syrup you'll be using; if no additional sugar is needed, this selection will be ignored.</p>
 
       <div class="form-check">
         <input class="form-check-input" type="radio" name="syrup-type" id="syrup-2to1" value="67" checked>
@@ -100,7 +101,7 @@
     <!-- STEP 5: MACHINE VOLUME -->
     <section id="section-volume" aria-labelledby="step5-heading">
       <h2 class="step-title" id="step5-heading">Step 5: Enter Machine Volume</h2>
-      <p>Enter the total capacity of your slushy machine. Check your machine's manual or measure the bowl volume.</p>
+      <p>Enter the total capacity of your slushy machine, or the total batch size you wish to prepare.</p>
       <div class="row g-2" style="max-width: 340px;">
         <div class="col-7">
           <label for="machine-volume" class="form-label">Machine Volume</label>
