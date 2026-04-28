@@ -98,11 +98,11 @@
 
     <hr>
 
-    <!-- STEP 5: MACHINE VOLUME -->
+    <!-- STEP 5: MACHINE VOLUME + SERVING SIZE -->
     <section id="section-volume" aria-labelledby="step5-heading">
       <h2 class="step-title" id="step5-heading">Step 5: Enter Machine Volume</h2>
       <p>Enter the total capacity of your slushy machine, or the total batch size you wish to prepare.</p>
-      <div class="input-group">
+      <div class="input-group mb-3">
         <span class="input-group-text" id="machine-volume-label">Machine Volume</span>
         <input type="number" id="machine-volume" class="form-control" placeholder="e.g. 64" min="0.1" step="0.1" aria-labelledby="machine-volume-label">
         <select id="machine-unit" class="form-select" style="max-width: 130px;" aria-label="Volume unit">
@@ -112,6 +112,24 @@
           <option value="l">Liters</option>
         </select>
       </div>
+      <div class="input-group">
+        <span class="input-group-text" id="serving-size-label">Serving Size</span>
+        <input type="number" id="serving-size" class="form-control" placeholder="e.g. 8" min="0.1" step="0.5" value="8" aria-labelledby="serving-size-label">
+        <select id="serving-unit" class="form-select" style="max-width: 130px;" aria-label="Serving size unit">
+          <option value="oz">Ounces</option>
+          <option value="ml">Milliliters</option>
+        </select>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- STEP 6: RECIPE NOTES -->
+    <section id="section-notes" aria-labelledby="step6-heading">
+      <h2 class="step-title" id="step6-heading">Step 6: Recipe Notes (Optional)</h2>
+      <p>Add any notes you'd like to include with your results — machine settings, garnish, batch date, etc.</p>
+      <textarea id="recipe-notes" class="form-control" rows="4" placeholder="Enter any recipe notes here" maxlength="500" aria-label="Recipe notes"></textarea>
+      <small id="notes-char-count" class="form-text text-muted">500 characters remaining</small>
     </section>
 
     <hr>
@@ -127,60 +145,9 @@
     <!-- RESULTS -->
     <section id="results" style="display:none;" aria-labelledby="results-heading" aria-live="polite">
       <h2 id="results-drink-name" class="results-title"></h2>
-      <p id="results-path-note" class="path-note"></p>
+      <p id="results-serving-count" class="results-subtitle"></p>
 
-      <div class="row g-3 mb-3">
-
-        <!-- Additions card -->
-        <div class="col-12">
-          <div class="card result-card">
-            <div class="card-header">What to Add</div>
-            <div class="card-body">
-              <div class="row text-center">
-                <div class="col-6 border-end">
-                  <div class="result-label">Syrup</div>
-                  <div class="result-value" id="result-syrup">—</div>
-                  <div class="result-unit" id="result-syrup-unit"></div>
-                </div>
-                <div class="col-6">
-                  <div class="result-label">Water</div>
-                  <div class="result-value" id="result-water">—</div>
-                  <div class="result-unit" id="result-water-unit"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Final numbers card -->
-        <div class="col-12">
-          <div class="card result-card">
-            <div class="card-header">Final Numbers</div>
-            <div class="card-body">
-              <div class="row text-center">
-                <div class="col-4">
-                  <div class="result-label">Final Volume</div>
-                  <div class="result-value" id="result-fv">—</div>
-                  <div class="result-unit">oz</div>
-                </div>
-                <div class="col-4 border-start border-end">
-                  <div class="result-label">Target ABV</div>
-                  <div class="result-value" id="result-abv">—</div>
-                  <div class="result-unit">%</div>
-                </div>
-                <div class="col-4">
-                  <div class="result-label">Target Brix</div>
-                  <div class="result-value" id="result-brix">13.5</div>
-                  <div class="result-unit">°Bx</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Scaled ingredients -->
+      <!-- Scaled recipe table -->
       <div class="card result-card mb-3">
         <div class="card-header">Scaled Recipe</div>
         <div class="card-body p-0">
@@ -194,6 +161,38 @@
             </thead>
             <tbody id="scaled-tbody"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Final numbers card -->
+      <div class="card result-card mb-3">
+        <div class="card-header">Final Numbers</div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-4">
+              <div class="result-label">Final Volume</div>
+              <div class="result-value" id="result-fv">—</div>
+              <div class="result-unit">oz</div>
+            </div>
+            <div class="col-4 border-start border-end">
+              <div class="result-label">Target ABV</div>
+              <div class="result-value" id="result-abv">—</div>
+              <div class="result-unit">%</div>
+            </div>
+            <div class="col-4">
+              <div class="result-label">Target Brix</div>
+              <div class="result-value" id="result-brix">13.5</div>
+              <div class="result-unit">°Bx</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipe notes -->
+      <div id="results-notes-block" class="card result-card mb-3" style="display:none;">
+        <div class="card-header">Notes</div>
+        <div class="card-body">
+          <p id="results-notes-text" class="mb-0"></p>
         </div>
       </div>
 
