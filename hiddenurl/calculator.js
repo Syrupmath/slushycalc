@@ -51,7 +51,7 @@ function createIngredientRow() {
     <div class="ingredient-card" role="group" aria-label="Ingredient ${id}">
       <div class="ingredient-row-top">
         <input type="text" class="form-control ingredient-name" placeholder="Ingredient name" aria-label="Ingredient name" autocomplete="off">
-        <button type="button" class="btn btn-outline-danger btn-sm btn-remove" aria-label="Remove this ingredient">&times;</button>
+        <button type="button" class="btn btn-danger btn-sm btn-remove" aria-label="Remove this ingredient">&times;</button>
       </div>
       <div class="ingredient-row-bottom">
         <div class="input-group">
