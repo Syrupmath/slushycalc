@@ -98,11 +98,11 @@
 
     <hr>
 
-    <!-- STEP 5: MACHINE VOLUME + SERVING SIZE -->
+    <!-- STEP 5: MACHINE VOLUME -->
     <section id="section-volume" aria-labelledby="step5-heading">
       <h2 class="step-title" id="step5-heading">Step 5: Enter Machine Volume</h2>
       <p>Enter the total capacity of your slushy machine, or the total batch size you wish to prepare.</p>
-      <div class="input-group mb-3">
+      <div class="input-group">
         <span class="input-group-text" id="machine-volume-label">Machine Volume</span>
         <input type="number" id="machine-volume" class="form-control" placeholder="e.g. 64" min="0.1" step="0.1" aria-labelledby="machine-volume-label">
         <select id="machine-unit" class="form-select" style="max-width: 130px;" aria-label="Volume unit">
@@ -112,9 +112,17 @@
           <option value="l">Liters</option>
         </select>
       </div>
+    </section>
+
+    <hr>
+
+    <!-- STEP 6: SERVING SIZE (OPTIONAL) -->
+    <section id="section-serving" aria-labelledby="step6-heading">
+      <h2 class="step-title" id="step6-heading">Step 6: Enter Serving Size (Optional)</h2>
+      <p>If you'd like to know how many servings your batch will yield, enter your intended serving size below. Leave this blank to skip.</p>
       <div class="input-group">
         <span class="input-group-text" id="serving-size-label">Serving Size</span>
-        <input type="number" id="serving-size" class="form-control" placeholder="e.g. 8" min="0.1" step="0.5" value="8" aria-labelledby="serving-size-label">
+        <input type="number" id="serving-size" class="form-control" placeholder="e.g. 8" min="0.1" step="0.5" aria-labelledby="serving-size-label">
         <select id="serving-unit" class="form-select" style="max-width: 130px;" aria-label="Serving size unit">
           <option value="oz">Ounces</option>
           <option value="ml">Milliliters</option>
@@ -124,15 +132,14 @@
 
     <hr>
 
-    <!-- STEP 6: RECIPE NOTES -->
-    <section id="section-notes" aria-labelledby="step6-heading">
-      <h2 class="step-title" id="step6-heading">Step 6: Recipe Notes (Optional)</h2>
+    <!-- STEP 7: RECIPE NOTES (OPTIONAL) -->
+    <section id="section-notes" aria-labelledby="step7-heading">
+      <h2 class="step-title" id="step7-heading">Step 7: Recipe Notes (Optional)</h2>
       <p>Add any notes you'd like to include with your results — machine settings, garnish, batch date, etc.</p>
       <textarea id="recipe-notes" class="form-control" rows="4" placeholder="Enter any recipe notes here" maxlength="500" aria-label="Recipe notes"></textarea>
       <small id="notes-char-count" class="form-text text-muted">500 characters remaining</small>
     </section>
 
-    <hr>
 
     <!-- CALCULATE BUTTON -->
     <button id="calculate-btn" class="btn btn-primary btn-lg w-100" type="button">
