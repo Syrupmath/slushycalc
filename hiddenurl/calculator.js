@@ -231,17 +231,27 @@ function runCalculation() {
   const scaledWater = Wv * scale;
   const scaledFv    = Fv * scale;
 
+  // ---- Serving count ----
+
+  const servingSizeRaw  = parseFloat(document.getElementById('serving-size').value) || 8;
+  const servingSizeUnit = document.getElementById('serving-unit').value;
+  const servingSizeOz   = toOz(servingSizeRaw, servingSizeUnit);
+  const servingCount    = Math.floor(scaledFv / servingSizeOz);
+  const servingSizeOzDisplay = servingSizeUnit === 'oz'
+    ? servingSizeRaw.toFixed(servingSizeRaw % 1 === 0 ? 0 : 1)
+    : ozToMl(servingSizeOz).toFixed(0);
+  const servingSizeMl   = ozToMl(servingSizeOz).toFixed(0);
+
   // ---- Render results ----
 
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
   document.getElementById('results-drink-name').textContent = recipeName;
-  document.getElementById('results-path-note').textContent  = pathLabel + (warnings.length ? ' — ' + warnings.join(' ') : '');
 
-  // What to add
-  document.getElementById('result-syrup').textContent      = scaledSyrup > 0 ? scaledSyrup.toFixed(2) : '0';
-  document.getElementById('result-syrup-unit').textContent = scaledSyrup > 0 ? `oz / ${ozToMl(scaledSyrup).toFixed(1)} mL` : '';
-  document.getElementById('result-water').textContent      = scaledWater > 0 ? scaledWater.toFixed(2) : '0';
-  document.getElementById('result-water-unit').textContent = scaledWater > 0 ? `oz / ${ozToMl(scaledWater).toFixed(1)} mL` : '';
+  // Serving count subtitle
+  const servingLabel = servingSizeUnit === 'oz'
+    ? `Approx. ${servingCount} ${servingSizeRaw}-oz (${servingSizeMl} mL) Serving${servingCount !== 1 ? 's' : ''}`
+    : `Approx. ${servingCount} ${servingSizeRaw}-mL Serving${servingCount !== 1 ? 's' : ''}`;
+  document.getElementById('results-serving-count').textContent = servingLabel;
 
   // Final numbers
   document.getElementById('result-fv').textContent  = scaledFv.toFixed(2);
@@ -284,6 +294,16 @@ function runCalculation() {
     tbody.appendChild(tr);
   }
 
+  // Notes
+  const notes = document.getElementById('recipe-notes').value.trim();
+  const notesBlock = document.getElementById('results-notes-block');
+  if (notes) {
+    document.getElementById('results-notes-text').textContent = notes;
+    notesBlock.style.display = 'block';
+  } else {
+    notesBlock.style.display = 'none';
+  }
+
   document.getElementById('results').style.display = 'block';
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -309,6 +329,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add ingredient button
   document.getElementById('add-ingredient').addEventListener('click', () => {
     document.getElementById('ingredient-list').appendChild(createIngredientRow());
+  });
+
+  // Notes character counter
+  const notesInput  = document.getElementById('recipe-notes');
+  const notesCount  = document.getElementById('notes-char-count');
+  notesInput.addEventListener('input', () => {
+    const remaining = notesInput.maxLength - notesInput.value.length;
+    notesCount.textContent = `${remaining} characters remaining`;
   });
 
   // Calculate button
