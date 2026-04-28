@@ -231,27 +231,43 @@ function runCalculation() {
   const scaledWater = Wv * scale;
   const scaledFv    = Fv * scale;
 
-  // ---- Serving count ----
+  // ---- Batch size label ----
 
-  const servingSizeRaw  = parseFloat(document.getElementById('serving-size').value) || 8;
+  const machineVolumeDisplay = machineVolumeRaw % 1 === 0
+    ? machineVolumeRaw.toString()
+    : machineVolumeRaw.toFixed(1);
+  const machineUnitLabel = {
+    oz:  'oz',
+    qt:  machineVolumeRaw === 1 ? 'Quart' : 'Quart',
+    gal: machineVolumeRaw === 1 ? 'Gallon' : 'Gallon',
+    l:   machineVolumeRaw === 1 ? 'Liter' : 'Liter',
+  }[machineVolumeUnit];
+  const batchLabel = `${machineVolumeDisplay}-${machineUnitLabel} Batch`;
+
+  // ---- Serving count (optional) ----
+
+  const servingSizeRaw  = parseFloat(document.getElementById('serving-size').value);
   const servingSizeUnit = document.getElementById('serving-unit').value;
-  const servingSizeOz   = toOz(servingSizeRaw, servingSizeUnit);
-  const servingCount    = Math.floor(scaledFv / servingSizeOz);
-  const servingSizeOzDisplay = servingSizeUnit === 'oz'
-    ? servingSizeRaw.toFixed(servingSizeRaw % 1 === 0 ? 0 : 1)
-    : ozToMl(servingSizeOz).toFixed(0);
-  const servingSizeMl   = ozToMl(servingSizeOz).toFixed(0);
+  const servingCountEl  = document.getElementById('results-serving-count');
+
+  if (!isNaN(servingSizeRaw) && servingSizeRaw > 0) {
+    const servingSizeOz  = toOz(servingSizeRaw, servingSizeUnit);
+    const servingCount   = Math.floor(scaledFv / servingSizeOz);
+    const servingSizeMl  = ozToMl(servingSizeOz).toFixed(0);
+    const servingLabel   = servingSizeUnit === 'oz'
+      ? `${batchLabel} — Approx. ${servingCount} ${servingSizeRaw}-oz (${servingSizeMl} mL) Serving${servingCount !== 1 ? 's' : ''}`
+      : `${batchLabel} — Approx. ${servingCount} ${servingSizeRaw}-mL Serving${servingCount !== 1 ? 's' : ''}`;
+    servingCountEl.textContent = servingLabel;
+    servingCountEl.style.display = 'block';
+  } else {
+    servingCountEl.textContent = batchLabel;
+    servingCountEl.style.display = 'block';
+  }
 
   // ---- Render results ----
 
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
-  document.getElementById('results-drink-name').textContent = recipeName;
-
-  // Serving count subtitle
-  const servingLabel = servingSizeUnit === 'oz'
-    ? `Approx. ${servingCount} ${servingSizeRaw}-oz (${servingSizeMl} mL) Serving${servingCount !== 1 ? 's' : ''}`
-    : `Approx. ${servingCount} ${servingSizeRaw}-mL Serving${servingCount !== 1 ? 's' : ''}`;
-  document.getElementById('results-serving-count').textContent = servingLabel;
+  document.getElementById('results-drink-name').textContent = recipeName + ' Slushy';
 
   // Final numbers
   document.getElementById('result-fv').textContent  = scaledFv.toFixed(2);
