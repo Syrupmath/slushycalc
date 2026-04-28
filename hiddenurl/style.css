@@ -233,6 +233,12 @@ hr {
   margin-bottom: 0.25rem;
 }
 
+.results-subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1.25rem;
+}
+
 .path-note {
   font-size: 0.8rem;
   color: #888;
