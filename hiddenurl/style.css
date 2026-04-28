@@ -236,96 +236,73 @@ hr {
 .results-subtitle {
   font-size: 0.9rem;
   color: #555;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
-.path-note {
-  font-size: 0.8rem;
-  color: #888;
-  font-style: italic;
-  margin-bottom: 1rem;
-}
-
-.result-card {
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.result-card .card-header {
+.results-section-heading {
   font-family: 'Raleway', sans-serif;
+  font-size: 1.1rem;
   font-weight: 800;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  background-color: #f8f9fa;
-  color: #555;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0.5rem 1rem;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
 }
 
-.result-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-}
-
-.result-value {
-  font-size: 1.75rem;
-  font-weight: 700;
+.additions-heading {
   color: #2a9d8f;
-  line-height: 1.1;
+  border-bottom-color: #2a9d8f;
 }
 
-.result-unit {
-  font-size: 0.75rem;
-  color: #aaa;
-  margin-top: 0.1rem;
+.results-ingredient-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
 }
 
-/* Scaled recipe table */
-
-#scaled-table {
-  font-size: 0.875rem;
+.results-ingredient-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.95rem;
 }
 
-#scaled-table thead th {
-  font-family: 'Raleway', sans-serif;
-  font-weight: 700;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #888;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0.4rem 0.75rem;
-}
-
-#scaled-table tbody td {
-  padding: 0.45rem 0.75rem;
-  vertical-align: middle;
-}
-
-#scaled-table tbody tr:last-child td {
+.results-ingredient-item:last-child {
   border-bottom: none;
 }
 
-.row-addition {
-  background-color: #f0faf9;
+.ing-name {
   font-weight: 600;
+  color: #222;
+  padding-right: 1rem;
+}
+
+.results-ingredient-addition .ing-name {
   color: #2a9d8f;
 }
 
-/* Machine note */
+.ing-amount {
+  font-size: 0.875rem;
+  color: #666;
+  white-space: nowrap;
+}
 
+.results-notes-text {
+  font-size: 0.875rem;
+  color: #555;
+  margin-bottom: 0;
+}
+
+/* Machine note */
 .machine-note {
   font-size: 0.8rem;
   color: #888;
   font-style: italic;
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   margin-bottom: 0;
 }
 
