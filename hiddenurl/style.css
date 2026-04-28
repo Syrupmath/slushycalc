@@ -132,79 +132,52 @@ hr {
 /* ---- Ingredient rows ---- */
 
 #ingredient-list li {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
-.ingredient-row {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0.4rem;
-  align-items: center;
-  width: 100%;
-}
-
-.ingredient-name {
-  flex: 2 1 0;
-  min-width: 0;
-}
-
-.ingredient-quantity {
-  flex: 0 0 5rem;
-}
-
-.ingredient-unit {
-  flex: 0 0 7rem;
-}
-
-.ingredient-abv {
-  flex: 0 0 5rem;
-}
-
-.ingredient-abv-group {
-  flex: 0 0 6.5rem;
-  display: flex;
-}
-
-.ingredient-abv-group .form-control {
-  border-radius: 5px 0 0 5px;
-}
-
-.ingredient-abv-group .input-group-text {
-  border-radius: 0 5px 5px 0;
-  font-size: 0.8rem;
-  padding: 0.375rem 0.5rem;
+.ingredient-card {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
   background-color: #f8f9fa;
 }
 
-.btn-remove {
-  flex: 0 0 auto;
-  padding: 0.375rem 0.6rem;
-  font-size: 0.85rem;
-  line-height: 1;
-}
-
-/* ---- Column header labels for ingredient rows ---- */
-
-.ingredient-col-headers {
+.ingredient-row-top {
   display: flex;
   gap: 0.4rem;
-  margin-bottom: 0.25rem;
-  align-items: flex-end;
+  margin-bottom: 0.4rem;
+  align-items: center;
 }
 
-.ingredient-col-headers span {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+.ingredient-row-top .ingredient-name {
+  flex: 1 1 auto;
+  background-color: #fff;
 }
 
-.col-hdr-name  { flex: 2 1 0; }
-.col-hdr-qty   { flex: 0 0 5rem; }
-.col-hdr-unit  { flex: 0 0 7rem; }
-.col-hdr-abv   { flex: 0 0 6.5rem; }
-.col-hdr-del   { flex: 0 0 2rem; }
+.ingredient-row-top .btn-remove {
+  flex: 0 0 auto;
+}
+
+.ingredient-row-bottom .input-group {
+  width: 100%;
+}
+
+.ingredient-row-bottom .ingredient-quantity {
+  flex: 0 0 5rem;
+  max-width: 5rem;
+  background-color: #fff;
+}
+
+.ingredient-row-bottom .ingredient-unit {
+  flex: 1 1 auto;
+  background-color: #fff;
+}
+
+.ingredient-row-bottom .ingredient-abv {
+  flex: 0 0 4.5rem;
+  max-width: 4.5rem;
+  background-color: #fff;
+}
 
 /* ---- Buttons ---- */
 
@@ -434,11 +407,6 @@ footer p {
   .btn-remove {
     flex: 0 0 auto;
     align-self: flex-end;
-  }
-
-  /* Hide column headers on mobile since rows stack */
-  .ingredient-col-headers {
-    display: none;
   }
 
   .result-value {
