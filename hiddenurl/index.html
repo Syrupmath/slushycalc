@@ -154,59 +154,25 @@
       <h2 id="results-drink-name" class="results-title"></h2>
       <p id="results-serving-count" class="results-subtitle"></p>
 
-      <!-- Scaled recipe table -->
-      <div class="card result-card mb-3">
-        <div class="card-header">Scaled Recipe</div>
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0" id="scaled-table" aria-label="Scaled ingredient amounts">
-            <thead>
-              <tr>
-                <th scope="col">Ingredient</th>
-                <th scope="col" class="text-end">oz</th>
-                <th scope="col" class="text-end">mL</th>
-              </tr>
-            </thead>
-            <tbody id="scaled-tbody"></tbody>
-          </table>
-        </div>
-      </div>
+      <!-- Scaled base recipe -->
+      <h3 class="results-section-heading">Scaled Base Recipe</h3>
+      <ul id="scaled-base-list" class="results-ingredient-list" aria-label="Scaled base recipe"></ul>
 
-      <!-- Final numbers card -->
-      <div class="card result-card mb-3">
-        <div class="card-header">Final Numbers</div>
-        <div class="card-body">
-          <div class="row text-center">
-            <div class="col-4">
-              <div class="result-label">Final Volume</div>
-              <div class="result-value" id="result-fv">—</div>
-              <div class="result-unit">oz</div>
-            </div>
-            <div class="col-4 border-start border-end">
-              <div class="result-label">Target ABV</div>
-              <div class="result-value" id="result-abv">—</div>
-              <div class="result-unit">%</div>
-            </div>
-            <div class="col-4">
-              <div class="result-label">Target Brix</div>
-              <div class="result-value" id="result-brix">13.5</div>
-              <div class="result-unit">°Bx</div>
-            </div>
-          </div>
-        </div>
+      <!-- Additional ingredients -->
+      <div id="additions-block" style="display:none;">
+        <h3 class="results-section-heading additions-heading">Additional Ingredients for Slushy</h3>
+        <ul id="scaled-additions-list" class="results-ingredient-list" aria-label="Additional ingredients for slushy"></ul>
       </div>
 
       <!-- Recipe notes -->
-      <div id="results-notes-block" class="card result-card mb-3" style="display:none;">
-        <div class="card-header">Notes</div>
-        <div class="card-body">
-          <p id="results-notes-text" class="mb-0"></p>
-        </div>
+      <div id="results-notes-block" style="display:none;">
+        <h3 class="results-section-heading">Notes</h3>
+        <p id="results-notes-text" class="results-notes-text"></p>
       </div>
 
       <p class="machine-note"><i class="fas fa-snowflake" aria-hidden="true"></i> Set your machine to maximum cold. Ignore smart presets.</p>
 
     </section>
-
     <hr>
 
     <!-- FOOTER -->
