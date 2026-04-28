@@ -48,43 +48,23 @@ function createIngredientRow() {
   const id  = ingredientCount;
 
   li.innerHTML = `
-    <div class="ingredient-row" role="group" aria-label="Ingredient ${id}">
-      <input
-        type="text"
-        class="form-control ingredient-name"
-        placeholder="Ingredient name"
-        aria-label="Ingredient name"
-        autocomplete="off"
-      >
-      <input
-        type="number"
-        class="form-control ingredient-quantity"
-        placeholder="Qty"
-        min="0"
-        step="0.25"
-        aria-label="Quantity"
-      >
-      <select class="form-select ingredient-unit" aria-label="Unit">
-        <option value="oz">Ounces</option>
-        <option value="ml">Milliliters</option>
-      </select>
-      <div class="input-group ingredient-abv-group">
-        <input
-          type="number"
-          class="form-control ingredient-abv"
-          placeholder="ABV"
-          min="0"
-          max="100"
-          step="0.5"
-          aria-label="ABV percent"
-        >
-        <span class="input-group-text">%</span>
+    <div class="ingredient-card" role="group" aria-label="Ingredient ${id}">
+      <div class="ingredient-row-top">
+        <input type="text" class="form-control ingredient-name" placeholder="Ingredient name" aria-label="Ingredient name" autocomplete="off">
+        <button type="button" class="btn btn-outline-danger btn-sm btn-remove" aria-label="Remove this ingredient">&times;</button>
       </div>
-      <button
-        type="button"
-        class="btn btn-outline-danger btn-sm btn-remove"
-        aria-label="Remove this ingredient"
-      >&times;</button>
+      <div class="ingredient-row-bottom">
+        <div class="input-group">
+          <input type="number" class="form-control ingredient-quantity" placeholder="Qty" min="0" step="0.25" aria-label="Quantity">
+          <select class="form-select ingredient-unit" aria-label="Unit">
+            <option value="oz">Ounces</option>
+            <option value="ml">Milliliters</option>
+          </select>
+          <span class="input-group-text">@</span>
+          <input type="number" class="form-control ingredient-abv" placeholder="ABV" min="0" max="100" step="0.5" aria-label="ABV percent">
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
     </div>
   `;
 
@@ -322,18 +302,6 @@ function escapeHtml(str) {
 // ---- Init ----
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  // Column headers for ingredient table
-  const colHeaders = document.createElement('div');
-  colHeaders.className = 'ingredient-col-headers';
-  colHeaders.innerHTML = `
-    <span class="col-hdr-name">Ingredient</span>
-    <span class="col-hdr-qty">Qty</span>
-    <span class="col-hdr-unit">Unit</span>
-    <span class="col-hdr-abv">ABV</span>
-    <span class="col-hdr-del"></span>
-  `;
-  document.getElementById('ingredient-list').before(colHeaders);
 
   // Start with one ingredient row
   document.getElementById('ingredient-list').appendChild(createIngredientRow());
