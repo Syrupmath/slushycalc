@@ -70,10 +70,10 @@
     <section id="section-brix" aria-labelledby="step3-heading">
       <h2 class="step-title" id="step3-heading">Step 3: Enter Refractometer Reading</h2>
       <p>Proper slushy texture depends on sugar content, and every cocktail starts with a different amount. Before entering your recipe, mix a small sample as written and take a Brix reading with an optical refractometer – this tells the calculator where your drink currently stands so it can determine exactly what adjustments are needed.</p>
-      <label for="brix-input" class="form-label">Raw Refractometer Reading (Brix)</label>
-      <div class="input-group" style="max-width: 220px;">
-        <input type="number" id="brix-input" class="form-control" placeholder="e.g. 18.5" min="0" max="100" step="0.1" aria-describedby="brix-unit">
-        <span class="input-group-text" id="brix-unit">°Bx</span>
+      <div class="input-group">
+        <span class="input-group-text" id="brix-label">Brix Reading</span>
+        <input type="number" id="brix-input" class="form-control" placeholder="e.g. 18.5" min="0" max="100" step="0.1" aria-labelledby="brix-label" aria-describedby="brix-unit">
+        <span class="input-group-text" id="brix-unit">%</span>
       </div>
     </section>
 
