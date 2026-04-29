@@ -182,14 +182,17 @@ hr {
 
 /* ---- Optional sections ---- */
 
-#section-serving,
-#section-notes {
+#optional-steps {
   background-color: #f8f9fa;
   border-left: 3px solid #e0e0e0;
   border-radius: 0 6px 6px 0;
   padding: 1rem 1rem 0.25rem 1rem;
   margin-left: -1rem;
   margin-right: -1rem;
+}
+
+#optional-steps section + section {
+  margin-top: 1.5rem;
 }
 
 .btn-primary {
@@ -446,8 +449,7 @@ footer p {
   #section-brix,
   #section-syrup,
   #section-volume,
-  #section-serving,
-  #section-notes,
+  #optional-steps,
   #calculate-btn,
   #error-alert,
   button,
