@@ -163,8 +163,8 @@ hr {
 }
 
 .ingredient-row-bottom .ingredient-quantity {
-  flex: 0 0 5.5rem;
-  max-width: 5.5rem;
+  flex: 0 0 4.5rem;
+  max-width: 4.5rem;
   background-color: #fff;
 }
 
@@ -175,8 +175,8 @@ hr {
 }
 
 .ingredient-row-bottom .ingredient-abv {
-  flex: 0 0 5.5rem;
-  max-width: 5.5rem;
+  flex: 0 0 4.5rem;
+  max-width: 4.5rem;
   background-color: #fff;
 }
 
