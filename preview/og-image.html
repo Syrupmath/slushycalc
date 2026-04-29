@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      background: #2a9d8f;
+    }
+
+    .card {
+      width: 1200px;
+      height: 630px;
+      background: #2a9d8f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      gap: 0;
+    }
+
+    /* Subtle radial darkening toward edges */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.25) 100%);
+      pointer-events: none;
+    }
+
+    .snowflake {
+      width: 160px;
+      height: 160px;
+      margin-bottom: 24px;
+      /* Remove the teal circle background, keep only the white snowflake */
+      /* We'll use mix-blend-mode to knock out the circle */
+      position: relative;
+      z-index: 1;
+    }
+
+    .the {
+      font-family: 'Raleway', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 10px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .title {
+      font-family: 'Pacifico', cursive;
+      font-size: 96px;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rule {
+      width: 320px;
+      height: 2px;
+      background: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .url {
+      font-family: 'Raleway', sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tagline {
+      font-family: 'Raleway', sans-serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.45);
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="snowflake" src="snowflake.png" alt="Snowflake">
+    <p class="the">The</p>
+    <h1 class="title">Simple Slushy Calculator</h1>
+    <div class="rule"></div>
+    <p class="url">slushycalc.com</p>
+    <p class="tagline">Convert any cocktail recipe for a slushy machine.</p>
+  </div>
+</body>
+</html>
