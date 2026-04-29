@@ -36,7 +36,7 @@
       <p class="the">The</p>
       <h1>Simple Slushy Calculator</h1>
       <p class="byline">by <a href="https://jeffreymorgenthaler.com/" target="_blank" aria-label="Jeffrey Morgenthaler's website, opens in a new window">Jeffrey Morgenthaler</a></p>
-      <p class="description">This calculator prepares cocktail recipes for frozen drink machines. It takes your existing recipe and simultaneously scales it to your desired batch size, while determining what, if anything, needs to be added in order to achieve the proper texture.</p>
+      <p class="description">This calculator takes your existing single-serving cocktail recipe and converts it for use in <a href="https://amzn.to/4ui2Vpk" target="_blank" aria-label="Buy a frozen drink machine, opens in a new window">frozen drink machines</a>. It scales your recipe to your desired batch size while determining what, if anything, needs to be added in order to achieve the proper slushy texture.</p>
     </header>
 
     <hr>
@@ -71,7 +71,9 @@
     <!-- STEP 3: REFRACTOMETER READING -->
     <section id="section-brix" aria-labelledby="step3-heading">
       <h2 class="step-title" id="step3-heading">Step 3: Enter Refractometer Reading</h2>
-      <p>Proper slushy texture depends on sugar content, and every cocktail starts with a different amount. Before entering your recipe, mix a small sample as written and <a href="https://amzn.to/48ZJlG4" target="_blank" aria-label="Buy an optical refractometer, opens in a new window">take a Brix reading with an optical refractometer</a> – this tells the calculator where your drink currently stands so it can determine exactly what adjustments are needed.</p>
+      <p>Proper slushy texture depends on sugar content, and every cocktail contains a different amount.</p>
+      <p>In order to know the existing sugar content (Brix) of your cocktail, you will need to prepare one serving and measure the existing sugar with an <a href="https://amzn.to/48ZJlG4" target="_blank" aria-label="Buy an optical refractometer, opens in a new window">inexpensive optical refractometer</a>.</p>
+      <p>Mix your ingredients together without stirring or shaking with ice, measure the Brix with your refractometer, and enter the value below.</p>
       <div class="input-group">
         <span class="input-group-text" id="brix-label">Brix Reading</span>
         <input type="number" id="brix-input" class="form-control" placeholder="e.g. 18.5" min="0" max="100" step="0.1" aria-labelledby="brix-label" aria-describedby="brix-unit">
@@ -84,7 +86,8 @@
     <!-- STEP 4: SYRUP TYPE -->
     <section id="section-syrup" aria-labelledby="step4-heading">
       <h2 class="step-title" id="step4-heading">Step 4: Select Syrup Type</h2>
-      <p>You'll also need to indicate whether you prefer to use 1:1 or 2:1 syrup for any sugar adjustments. Choose the syrup you'll be using; if no additional sugar is needed, this selection will be ignored.</p>
+      <p>You'll also need to indicate whether you prefer to use 1:1 or 2:1 syrup for any potential sugar adjustments. The <a href="https://syrupcalc.com/" target="_blank" aria-label="Universal Syrup Calculator, opens in a new window">Universal Syrup Calculator</a> is available to help you make perfectly-calibrated syrups should you need it.</p>
+      <p>Choose your syrup preference below; if no additional sugar is needed, this selection will be ignored.</p>
 
       <div class="form-check">
         <input class="form-check-input" type="radio" name="syrup-type" id="syrup-2to1" value="67" checked>
@@ -103,7 +106,7 @@
     <!-- STEP 5: MACHINE VOLUME -->
     <section id="section-volume" aria-labelledby="step5-heading">
       <h2 class="step-title" id="step5-heading">Step 5: Enter Machine Volume</h2>
-      <p>Enter the total capacity of your slushy machine, or the total batch size you wish to prepare.</p>
+      <p>Enter the volume capacity of your slushy machine, or the total batch size you wish to prepare.</p>
       <div class="input-group">
         <span class="input-group-text" id="machine-volume-label">Machine Volume</span>
         <input type="number" id="machine-volume" class="form-control" placeholder="e.g. 5" min="0.1" step="0.1" aria-labelledby="machine-volume-label">
@@ -121,7 +124,7 @@
     <!-- STEP 6: SERVING SIZE (OPTIONAL) -->
     <section id="section-serving" aria-labelledby="step6-heading">
       <h2 class="step-title" id="step6-heading">Step 6: Enter Serving Size (Optional)</h2>
-      <p>If you'd like to know how many servings your batch will yield, enter your intended serving size below. Leave this blank to skip.</p>
+      <p>If you'd like to know how many servings your batch will yield, enter your intended serving size below.</p>
       <div class="input-group">
         <span class="input-group-text" id="serving-size-label">Serving Size</span>
         <input type="number" id="serving-size" class="form-control" placeholder="e.g. 8" min="0.1" step="0.5" aria-labelledby="serving-size-label">
@@ -137,7 +140,7 @@
     <!-- STEP 7: RECIPE NOTES (OPTIONAL) -->
     <section id="section-notes" aria-labelledby="step7-heading">
       <h2 class="step-title" id="step7-heading">Step 7: Recipe Notes (Optional)</h2>
-      <p>Add any notes you'd like to include with your results — machine settings, garnish, batch date, etc.</p>
+      <p>Add any notes you'd like to include with your results.</p>
       <textarea id="recipe-notes" class="form-control" rows="4" placeholder="Enter any recipe notes here" maxlength="500" aria-label="Recipe notes"></textarea>
       <small id="notes-char-count" class="form-text text-muted">500 characters remaining</small>
     </section>
