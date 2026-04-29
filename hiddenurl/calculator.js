@@ -98,6 +98,7 @@ function runCalculation() {
   // --- Collect ingredients ---
   const rows = document.querySelectorAll('#ingredient-list li');
   const ingredients = [];
+  let rowIndex = 0;
 
   for (const row of rows) {
     const name = row.querySelector('.ingredient-name').value.trim();
@@ -106,17 +107,20 @@ function runCalculation() {
     const abv  = parseFloat(row.querySelector('.ingredient-abv').value);
 
     if (!name && isNaN(qty)) continue; // skip completely empty rows
+    rowIndex++;
+
+    const label = name ? `"${name}"` : `Ingredient ${rowIndex}`;
 
     if (!name) {
-      showError('One or more ingredients is missing a name.');
+      showError(`Ingredient ${rowIndex} is missing a name.`);
       return;
     }
     if (isNaN(qty) || qty <= 0) {
-      showError(`"${name}" has an invalid quantity. Please enter a number greater than zero.`);
+      showError(`${label} has a missing or invalid quantity. Please enter a number greater than zero.`);
       return;
     }
     if (isNaN(abv) || abv < 0 || abv > 100) {
-      showError(`"${name}" has an invalid ABV. Please enter a number between 0 and 100.`);
+      showError(`${label} is missing an ABV value. Please enter a number between 0 and 100.`);
       return;
     }
 
@@ -143,7 +147,7 @@ function runCalculation() {
   // --- B: raw refractometer reading ---
   const B = parseFloat(document.getElementById('brix-input').value);
   if (isNaN(B) || B < 0 || B > 100) {
-    showError('Please enter a valid refractometer reading (0–100).');
+    showError('Step 3: Please enter a valid refractometer reading (0–100).');
     return;
   }
 
@@ -154,7 +158,7 @@ function runCalculation() {
   const machineVolumeRaw  = parseFloat(document.getElementById('machine-volume').value);
   const machineVolumeUnit = document.getElementById('machine-unit').value;
   if (isNaN(machineVolumeRaw) || machineVolumeRaw <= 0) {
-    showError('Please enter a valid machine volume greater than zero.');
+    showError('Step 5: Please enter a valid machine volume greater than zero.');
     return;
   }
   const M = toOz(machineVolumeRaw, machineVolumeUnit);
@@ -214,7 +218,7 @@ function runCalculation() {
 
   // --- Step 4: Scale to machine volume ---
   if (Fv <= 0) {
-    showError('Final volume calculation produced an invalid result. Please check your inputs.');
+    showError('Step 5: Please enter a valid machine volume greater than zero.');
     return;
   }
 
