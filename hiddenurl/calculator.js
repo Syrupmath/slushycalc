@@ -277,6 +277,16 @@ function runCalculation() {
     return li;
   }
 
+  // Original recipe list (for print) — unscaled amounts
+  const originalList = document.getElementById('original-recipe-list');
+  originalList.innerHTML = '';
+  ingredients.forEach(ing => {
+    const li = document.createElement('li');
+    li.className = 'results-ingredient-item';
+    li.innerHTML = `<span class="ing-name">${escapeHtml(ing.name)}</span><span class="ing-amount">${ing.oz.toFixed(2)} oz</span>`;
+    originalList.appendChild(li);
+  });
+
   // Scaled base recipe list
   const baseList = document.getElementById('scaled-base-list');
   baseList.innerHTML = '';
