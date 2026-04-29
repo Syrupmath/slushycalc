@@ -66,7 +66,6 @@ function createIngredientRow() {
             <option value="dashes">Dashes</option>
             <option value="drops">Drops</option>
           </select>
-          <span class="input-group-text">@</span>
           <input type="number" class="form-control ingredient-abv" placeholder="ABV" min="0" max="100" step="0.5" aria-label="ABV percent">
           <span class="input-group-text">%</span>
         </div>
