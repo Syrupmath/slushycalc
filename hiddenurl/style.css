@@ -514,8 +514,12 @@ footer p {
   .results-title {
     font-family: 'Lora', serif;
     font-size: 2.25rem;
-    color: #2a9d8f;
+    color: #000;
     margin-bottom: 0.1rem;
+  }
+
+  header h1 {
+    color: #2a9d8f;
   }
 
   .results-subtitle {
