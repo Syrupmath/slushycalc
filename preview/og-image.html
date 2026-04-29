@@ -17,7 +17,7 @@
     .card {
       width: 1200px;
       height: 630px;
-      background: #2a9d8f;
+      background: url('background.jpg') center center / cover no-repeat;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,12 +26,21 @@
       gap: 0;
     }
 
-    /* Subtle radial darkening toward edges */
+    /* Dark overlay for legibility */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.52);
+      pointer-events: none;
+    }
+
+    /* Radial ombre — darker at edges */
     .card::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.25) 100%);
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.35) 100%);
       pointer-events: none;
     }
 
