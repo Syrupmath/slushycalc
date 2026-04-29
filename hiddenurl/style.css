@@ -163,13 +163,14 @@ hr {
 }
 
 .ingredient-row-bottom .ingredient-quantity {
-  flex: 0 0 5rem;
-  max-width: 5rem;
+  flex: 0 0 6.5rem;
+  max-width: 6.5rem;
   background-color: #fff;
 }
 
 .ingredient-row-bottom .ingredient-unit {
-  flex: 1 1 auto;
+  flex: 0 0 8rem;
+  max-width: 8rem;
   background-color: #fff;
 }
 
@@ -407,43 +408,185 @@ footer p {
 
 @media print {
 
-  body {
+  html, body {
     background: none !important;
     display: block;
     padding: 0;
+    margin: 0;
+    height: 100%;
   }
 
   .form-container {
+    width: 100%;
     max-width: 100%;
-    border: none;
+    height: auto;
+    border: none !important;
+    background: none !important;
     border-radius: 0;
-    padding: 0;
     margin: 0;
-    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
 
-  /* Hide all input sections */
+  /* Hide all input sections and interactive elements */
   #section-name,
   #section-ingredients,
   #section-brix,
   #section-syrup,
   #section-volume,
+  #section-serving,
+  #section-notes,
   #calculate-btn,
   #error-alert,
-  #add-ingredient,
-  footer {
+  button,
+  hr {
     display: none !important;
   }
 
+  /* Show only header, results, footer */
   header,
-  #results {
+  #results,
+  footer {
     display: block !important;
+  }
+
+  header {
+    flex: 0 1 auto;
+    text-align: left;
+    padding: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  header h1 {
+    font-size: 1.75rem;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    color: #000;
+    text-align: left;
+  }
+
+  header .the {
+    text-align: left;
+    font-size: 0.7rem;
+    margin: 0;
+  }
+
+  header .byline {
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  header .description {
+    display: none;
   }
 
   #url-display {
     display: inline;
   }
 
+  /* Results */
+  #results {
+    flex: 0 1 auto;
+    padding-top: 1.5rem;
+    margin-top: 0;
+  }
+
+  .results-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.25rem;
+    color: #000;
+    margin-bottom: 0.1rem;
+  }
+
+  .results-subtitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 1.25rem;
+  }
+
+  .results-section-heading {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #000;
+    border-bottom: 3px solid #000;
+    padding-bottom: 3px;
+    margin-top: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .additions-heading {
+    color: #000;
+    border-bottom-color: #000;
+  }
+
+  .results-ingredient-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .results-ingredient-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.2rem 0;
+    border-bottom: none;
+    font-size: 0.85rem;
+  }
+
+  .ing-name {
+    font-weight: 600;
+    color: #000;
+  }
+
+  .results-ingredient-addition .ing-name {
+    color: #000;
+  }
+
+  .ing-amount {
+    color: #000;
+    font-size: 0.85rem;
+  }
+
+  .results-notes-text {
+    font-size: 0.85rem;
+    color: #000;
+  }
+
+  .machine-note {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #555;
+    text-align: left;
+    margin-top: 1rem;
+  }
+
+  /* Footer */
+  footer {
+    font-size: 0.7rem;
+    color: #555;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-bottom: 1rem;
+    text-align: left;
+  }
+
+  footer p {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  /* Suppress shadows, borders, backgrounds globally */
   * {
     box-shadow: none !important;
   }
@@ -453,7 +596,12 @@ footer p {
     text-decoration: none !important;
   }
 
-  .machine-note {
-    font-style: italic;
+  .form-container {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .form-container > *:not(header):not(#results):not(footer) {
+    display: none !important;
   }
 }
