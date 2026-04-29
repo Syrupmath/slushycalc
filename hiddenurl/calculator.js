@@ -271,7 +271,7 @@ function runCalculation() {
   // ---- Render results ----
 
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
-  document.getElementById('results-drink-name').textContent = recipeName + ' Slushy';
+  document.getElementById('results-drink-name').textContent = 'Slushy ' + recipeName;
 
   // Helper: build a list item with name + oz (mL)
   function makeIngredientLi(name, oz, ml, isAddition) {
