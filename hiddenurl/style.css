@@ -3,7 +3,7 @@
    Bootstrap 5 base + custom overrides
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Raleway:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Raleway:wght@400;600;800&family=Roboto:wght@400;500;700&family=Lora:wght@600&display=swap');
 
 /* ---- Base ---- */
 
@@ -488,6 +488,22 @@ footer p {
     display: inline;
   }
 
+  /* Two-column results layout for print */
+  .results-columns {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .results-col-original {
+    flex: 0 0 30%;
+  }
+
+  .results-col-scaled {
+    flex: 1 1 auto;
+  }
+
   /* Results */
   #results {
     flex: 0 1 auto;
@@ -496,7 +512,7 @@ footer p {
   }
 
   .results-title {
-    font-family: 'Pacifico', cursive;
+    font-family: 'Lora', serif;
     font-size: 2.25rem;
     color: #000;
     margin-bottom: 0.1rem;
