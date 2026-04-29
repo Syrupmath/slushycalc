@@ -169,8 +169,8 @@ hr {
 }
 
 .ingredient-row-bottom .ingredient-unit {
-  flex: 0 0 8rem;
-  max-width: 8rem;
+  flex: 1 1 auto;
+  min-width: 0;
   background-color: #fff;
 }
 
