@@ -174,18 +174,16 @@ function runCalculation() {
   // --- Step 3: Choose path ---
   let Fv, Sv, Wv, pathLabel, warnings = [];
 
-  const isNonAlcoholic = A === 0;
-  const belowTargetBrix = Bc < TARGET_BRIX;
-
-  if (isNonAlcoholic || belowTargetBrix) {
-    // PATH 3 — Syrup-Only
-    pathLabel = 'Path 3 (syrup addition only)';
-    Sv = V * (TARGET_BRIX - Bc) / (S - TARGET_BRIX);
-    Fv = V + Sv;
+  // Early exit: drink already meets both targets — just scale, no additions
+  if (Math.abs(Bc - TARGET_BRIX) < 0.1 && A <= TARGET_ABV) {
+    pathLabel = 'No additions needed';
+    Fv = V;
+    Sv = 0;
     Wv = 0;
 
   } else {
-    const ratio = (A * TARGET_BRIX) / Bc;
+    // ratio = 0 when A = 0, correctly routes non-alcoholic drinks to Path 1
+    const ratio = A === 0 ? 0 : (A * TARGET_BRIX) / Bc;
 
     if (ratio <= TARGET_ABV) {
       // PATH 1 — Brix-First
@@ -195,8 +193,8 @@ function runCalculation() {
       Wv = Fv - V;
 
       if (Wv < 0) {
-        // Route to Path 3 instead
-        pathLabel = 'Path 3 (syrup addition only — Brix below target after dilution check)';
+        // Brix below target — fall back to Path 3
+        pathLabel = 'Path 3 (syrup addition only)';
         Sv = V * (TARGET_BRIX - Bc) / (S - TARGET_BRIX);
         Fv = V + Sv;
         Wv = 0;
