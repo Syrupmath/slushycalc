@@ -273,6 +273,15 @@ function runCalculation() {
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
   document.getElementById('results-drink-name').textContent = 'Slushy ' + recipeName;
 
+  // Swap page title for print filename, restore after
+  const originalTitle = document.title;
+  const printTitle = 'Slushy ' + recipeName + ' - The Simple Slushy Calculator';
+  document.title = printTitle;
+  window.addEventListener('afterprint', function restoreTitle() {
+    document.title = originalTitle;
+    window.removeEventListener('afterprint', restoreTitle);
+  });
+
   // Helper: build a list item with name + oz (mL)
   function makeIngredientLi(name, oz, ml, isAddition) {
     const li = document.createElement('li');
