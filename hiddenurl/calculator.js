@@ -25,12 +25,15 @@ const BRIX_1TO1       = 50;
 
 function toOz(value, unit) {
   switch (unit) {
-    case 'oz':  return value;
-    case 'ml':  return value / 29.5735;
-    case 'qt':  return value * 32;
-    case 'gal': return value * 128;
-    case 'l':   return value * 33.814;
-    default:    return value;
+    case 'oz':    return value;
+    case 'ml':    return value / 29.5735;
+    case 'qt':    return value * 32;
+    case 'gal':   return value * 128;
+    case 'l':     return value * 33.814;
+    case 'tsp':   return value * 0.166667;
+    case 'dashes': return value * 0.020833;
+    case 'drops': return value * 0.0016907;
+    default:      return value;
   }
 }
 
@@ -59,6 +62,9 @@ function createIngredientRow() {
           <select class="form-select ingredient-unit" aria-label="Unit">
             <option value="oz">Ounces</option>
             <option value="ml">Milliliters</option>
+            <option value="tsp">Teaspoons</option>
+            <option value="dashes">Dashes</option>
+            <option value="drops">Drops</option>
           </select>
           <span class="input-group-text">@</span>
           <input type="number" class="form-control ingredient-abv" placeholder="ABV" min="0" max="100" step="0.5" aria-label="ABV percent">
