@@ -154,14 +154,28 @@
       <h2 id="results-drink-name" class="results-title"></h2>
       <p id="results-serving-count" class="results-subtitle"></p>
 
-      <!-- Scaled base recipe -->
-      <h3 class="results-section-heading">Scaled Base Recipe</h3>
-      <ul id="scaled-base-list" class="results-ingredient-list" aria-label="Scaled base recipe"></ul>
+      <!-- Two-column wrapper (columns only activate in print) -->
+      <div class="results-columns">
 
-      <!-- Additional ingredients -->
-      <div id="additions-block" style="display:none;">
-        <h3 class="results-section-heading additions-heading">Additional Ingredients for Slushy</h3>
-        <ul id="scaled-additions-list" class="results-ingredient-list" aria-label="Additional ingredients for slushy"></ul>
+        <!-- Left col: original recipe (print only) -->
+        <div class="results-col-original d-none d-print-block">
+          <h3 class="results-section-heading">Original Recipe</h3>
+          <ul id="original-recipe-list" class="results-ingredient-list" aria-label="Original recipe"></ul>
+        </div>
+
+        <!-- Right col: scaled recipe + additions -->
+        <div class="results-col-scaled">
+          <!-- Scaled base recipe -->
+          <h3 class="results-section-heading">Scaled Base Recipe</h3>
+          <ul id="scaled-base-list" class="results-ingredient-list" aria-label="Scaled base recipe"></ul>
+
+          <!-- Additional ingredients -->
+          <div id="additions-block" style="display:none;">
+            <h3 class="results-section-heading additions-heading">Additional Ingredients for Slushy</h3>
+            <ul id="scaled-additions-list" class="results-ingredient-list" aria-label="Additional ingredients for slushy"></ul>
+          </div>
+        </div>
+
       </div>
 
       <!-- Recipe notes -->
