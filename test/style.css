@@ -445,9 +445,10 @@ footer p {
     background: none !important;
     border-radius: 0;
     margin: 0;
-    padding: 0;
+    padding: 0 0 0.9in;   /* room at the bottom for the footer */
     display: block;
-    min-height: 0;
+    position: relative;
+    min-height: 9.8in;    /* roughly one letter page inside the 0.5in margins */
   }
  
   /* Hide all input sections and interactive elements */
@@ -625,7 +626,10 @@ footer p {
   footer {
     font-size: 0.7rem;
     color: #555;
-    margin-top: 1.5rem;
+    position: absolute;   /* pinned to the bottom of the page / last page */
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding-bottom: 0;
     text-align: center;
     break-inside: avoid;
@@ -659,4 +663,4 @@ footer p {
     display: none !important;
   }
 }
- 
+Claude finished the response
