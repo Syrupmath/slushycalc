@@ -1,4 +1,3 @@
-Slushy calculator patched · JS
 /* ============================================================
    slushycalc.com — calculator.js
    Slushy Calculator — Complete Formula Reference (Validated Build)
@@ -21,6 +20,9 @@ const ABV_HARD_STOP   = 25;
 const BRIX_CORRECTION = 0.184;
 const BRIX_2TO1       = 67;
 const BRIX_1TO1       = 50;
+ 
+// Page title as loaded; restored after printing (see init).
+const ORIGINAL_TITLE  = document.title;
  
 // ---- Unit conversions to ounces ----
  
@@ -58,7 +60,7 @@ function createIngredientRow() {
         <button type="button" class="btn btn-danger btn-sm btn-remove" aria-label="Remove this ingredient">&times;</button>
       </div>
       <div class="ingredient-row-bottom">
-        <div class="input-group">
+        <div class="input-group ingredient-qty-unit">
           <input type="number" class="form-control ingredient-quantity" placeholder="Qty" min="0" step="0.25" aria-label="Quantity">
           <select class="form-select ingredient-unit" aria-label="Unit">
             <option value="oz">Ounces</option>
@@ -67,6 +69,8 @@ function createIngredientRow() {
             <option value="dashes">Dashes</option>
             <option value="drops">Drops</option>
           </select>
+        </div>
+        <div class="input-group ingredient-abv-group">
           <input type="number" class="form-control ingredient-abv" placeholder="ABV" min="0" max="100" step="0.5" aria-label="ABV percent">
           <span class="input-group-text">%</span>
         </div>
@@ -170,10 +174,15 @@ function runCalculation() {
   const M = toOz(machineVolumeRaw, machineVolumeUnit);
  
   // --- Step 2: Correct Brix for alcohol ---
-  const Bc = A === 0 ? B : B - (BRIX_CORRECTION * A);
+  // Sugar can't be negative. A reading at or just below the alcohol's own
+  // contribution (a nearly sugarless drink, within measurement noise) would
+  // otherwise give Bc < 0, which sneaks past the routing test below and skips
+  // the water dilution, leaving the drink far above the target ABV.
+  const Bc = A === 0 ? B : Math.max(0, B - (BRIX_CORRECTION * A));
  
   // --- Step 3: Choose path ---
   let Fv, Sv, Wv, pathLabel, warnings = [];
+  let syrupOnlyBelowTarget = false; // true when Path 2 had to fall back to syrup-only
  
   // Early exit: drink already meets both targets — just scale, no additions
   if (Math.abs(Bc - TARGET_BRIX) < 0.1 && A <= TARGET_ABV) {
@@ -183,7 +192,8 @@ function runCalculation() {
     Wv = 0;
  
   } else {
-    // ratio = 0 when A = 0, correctly routes non-alcoholic drinks to Path 1
+    // ratio = 0 when A = 0, correctly routes non-alcoholic drinks to Path 1.
+    // ratio = Infinity when Bc = 0 (no sugar at all), which routes to Path 2.
     const ratio = A === 0 ? 0 : (A * TARGET_BRIX) / Bc;
  
     if (ratio <= TARGET_ABV) {
@@ -203,47 +213,45 @@ function runCalculation() {
  
     } else {
       // PATH 2 — ABV-First
+      // Only reached when ratio > TARGET_ABV, i.e. Bc < 1.5 x A. In that case
+      // TARGET_BRIX x Fv = 1.5 x A x V > Bc x V, so Sv below is always positive.
       pathLabel = 'Path 2 (ABV-first with syrup correction)';
       Fv = (A * V) / TARGET_ABV;
       Sv = (TARGET_BRIX * Fv - Bc * V) / S;
       Wv = Fv - V - Sv;
  
-      if (Sv < 0) {
-        Sv = 0;
-        Wv = Fv - V;
-        warnings.push('Brix is approximate — no syrup addition required, but the final Brix may differ slightly from target.');
-      }
       if (Wv < 0) {
-        // Water floor: dilating to 9% ABV would need negative water, so the
-        // drink is already at or near target ABV and low on sugar. Water can't
+        // Water floor: reaching target ABV would need negative water, so the
+        // drink is already at or under target ABV and low on sugar. Water can't
         // help; correct Brix with syrup only (same fallback as Path 1).
         // Wv < 0 here always implies Bc < TARGET_BRIX, so Sv stays positive.
         pathLabel = 'Path 3 (syrup addition only)';
         Sv = V * (TARGET_BRIX - Bc) / (S - TARGET_BRIX);
         Fv = V + Sv;
         Wv = 0;
-        if ((A * V) / Fv < TARGET_ABV) {
-          warnings.push('ABV will be slightly below 9% — the drink is already under target, so only syrup was added to reach Brix. The drink will still freeze correctly.');
-        }
+        syrupOnlyBelowTarget = true;
       }
     }
   }
  
   // --- Step 4: Scale to machine volume ---
-  // Fv must be the volume the drink ACTUALLY has after the Path 2 clamps,
-  // not the theoretical "diluted to 9%" volume computed above. For a drink
-  // already under 9% ABV with a low Brix reading, that theoretical Fv is
-  // SMALLER than the drink itself (the formula wanted to remove water);
-  // the water clamp sets Wv = 0 but Fv was left unchanged, so the batch
-  // was scaled to a volume that no longer existed — an Aperol Spritz
-  // slushy came out at 757 oz (5.9 gallons) for a 5-gallon machine. On
-  // Paths 1 and 3 and the no-additions case V + Sv + Wv already equals
-  // Fv, so this line changes nothing there.
+  // Fv is always rebuilt from the parts so it is the volume the drink ACTUALLY
+  // has, never the theoretical "diluted to 9% ABV" volume. In Path 2 that
+  // theoretical volume can be SMALLER than the drink itself (a drink already
+  // under 9% ABV), which once scaled an Aperol Spritz batch to 757 oz for a
+  // 640 oz machine. On every other path V + Sv + Wv already equals Fv.
   Fv = V + Sv + Wv;
  
-  if (Fv <= 0) {
-    showError('Step 5: Please enter a valid machine volume greater than zero.');
+  if (!isFinite(Fv) || Fv <= 0) {
+    showError('Something went wrong calculating this recipe. Please check your ingredient quantities and Brix reading.');
     return;
+  }
+ 
+  if (syrupOnlyBelowTarget) {
+    const finalAbv = (A * V) / Fv;
+    if (finalAbv < TARGET_ABV - 0.05) {
+      warnings.push(`This recipe is already below the ${TARGET_ABV}% ABV target (about ${finalAbv.toFixed(1)}% as a finished batch), so no water is added — only syrup, to reach the target sweetness.`);
+    }
   }
  
   const scale = M / Fv;
@@ -257,19 +265,12 @@ function runCalculation() {
  
   const scaledSyrup = Sv * scale;
   const scaledWater = Wv * scale;
-  const scaledFv    = Fv * scale;
  
   // ---- Batch size label ----
  
-  const machineVolumeDisplay = machineVolumeRaw % 1 === 0
-    ? machineVolumeRaw.toString()
-    : machineVolumeRaw.toFixed(1);
-  const machineUnitLabel = {
-    oz:  'oz',
-    qt:  machineVolumeRaw === 1 ? 'Quart' : 'Quart',
-    gal: machineVolumeRaw === 1 ? 'Gallon' : 'Gallon',
-    l:   machineVolumeRaw === 1 ? 'Liter' : 'Liter',
-  }[machineVolumeUnit];
+  // Up to two decimals, no trailing zeros (5 -> "5", 2.5 -> "2.5", 2.25 -> "2.25")
+  const machineVolumeDisplay = String(Number(machineVolumeRaw.toFixed(2)) || machineVolumeRaw);
+  const machineUnitLabel = { oz: 'oz', qt: 'Quart', gal: 'Gallon', l: 'Liter' }[machineVolumeUnit];
   const batchLabel = `${machineVolumeDisplay}-${machineUnitLabel} Batch`;
  
   // ---- Serving count (optional) ----
@@ -280,7 +281,10 @@ function runCalculation() {
  
   if (!isNaN(servingSizeRaw) && servingSizeRaw > 0) {
     const servingSizeOz  = toOz(servingSizeRaw, servingSizeUnit);
-    const servingCount   = Math.floor(scaledFv / servingSizeOz);
+    // The batch is M oz by construction. Dividing M (not Fv x scale) with a tiny
+    // epsilon keeps exact fits exact: floating-point error otherwise turns
+    // 640 / 8 into 79 servings in a few percent of cases.
+    const servingCount   = Math.floor(M / servingSizeOz + 1e-9);
     const servingSizeMl  = ozToMl(servingSizeOz).toFixed(0);
     const servingLabel   = servingSizeUnit === 'oz'
       ? `${batchLabel} — Approx. ${servingCount} ${servingSizeRaw}-oz (${servingSizeMl} mL) Serving${servingCount !== 1 ? 's' : ''}`
@@ -297,14 +301,10 @@ function runCalculation() {
   const recipeName = document.getElementById('recipe-name').value.trim() || 'Your Recipe';
   document.getElementById('results-drink-name').textContent = 'Slushy ' + recipeName;
  
-  // Swap page title for print filename, restore after
-  const originalTitle = document.title;
-  const printTitle = 'Slushy ' + recipeName + ' - The Simple Slushy Calculator';
-  document.title = printTitle;
-  window.addEventListener('afterprint', function restoreTitle() {
-    document.title = originalTitle;
-    window.removeEventListener('afterprint', restoreTitle);
-  });
+  // Swap page title for the print filename. A single afterprint handler
+  // (registered in init) restores ORIGINAL_TITLE, so repeated calculations
+  // can't leave a stale recipe title behind.
+  document.title = 'Slushy ' + recipeName + ' - The Simple Slushy Calculator';
  
   // Helper: build a list item with name + oz (mL)
   function makeIngredientLi(name, oz, ml, isAddition) {
@@ -349,6 +349,18 @@ function runCalculation() {
  
   additionsBlock.style.display = (hasSyrup || hasWater) ? 'block' : 'none';
  
+  // Notices (e.g. no water added because the drink is already below target ABV)
+  const warningsEl = document.getElementById('results-warnings');
+  if (warningsEl) {
+    warningsEl.textContent = '';
+    warnings.forEach(msg => {
+      const p = document.createElement('p');
+      p.textContent = msg;
+      warningsEl.appendChild(p);
+    });
+    warningsEl.style.display = warnings.length ? 'block' : 'none';
+  }
+ 
   // Notes
   const notes = document.getElementById('recipe-notes').value.trim();
   const notesBlock = document.getElementById('results-notes-block');
@@ -359,8 +371,10 @@ function runCalculation() {
     notesBlock.style.display = 'none';
   }
  
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const resultsEl = document.getElementById('results');
+  resultsEl.style.display = 'block';
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  resultsEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
 }
  
 // ---- Utility ----
@@ -398,10 +412,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('calculate-btn').addEventListener('click', runCalculation);
  
   // Enter key on number inputs triggers calculation
+  // (isComposing: don't fire while confirming an IME composition)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('input[type="number"], input[type="text"]')) {
+    if (e.key === 'Enter' && !e.isComposing && e.target.matches('input[type="number"], input[type="text"]')) {
       runCalculation();
     }
+  });
+ 
+  // Restore the normal page title once the print dialog closes
+  window.addEventListener('afterprint', () => {
+    document.title = ORIGINAL_TITLE;
   });
 });
  
